@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheets" type="text/css" href = "style.css">
 </head>
 
 <body>
 	<form method="post">
-		<input type="submit" value="Add to do"/>
 		<input type="text" name="task" placeholder="to do item"/>
+		<input type="submit" value="Add to do"/>
 		
 	</form>
 	<ul>
-		<li>
-			<label>
-				<input type="checkbox" > to do item 1
-			</label>
-		</li>
+
+		{% for task in taskList %}
+			<li>
+				<label>
+					<input type="checkbox" > {{ task.description || ''}}
+				</label>
+			</li>
+		{% endfor%}
+		
 	</ul>
 
 </body>
