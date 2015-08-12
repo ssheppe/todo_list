@@ -1,11 +1,29 @@
 body {
   padding: 50px;
-  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; 
+  background-image: url("http://36.media.tumblr.com/8eef3be08a753b88d601cdfc843faa70/tumblr_mx5oraJQlU1si8rb9o1_1280.png");
+  color: #000000;
+  background-color: #CC99FF;
+}
+
+header {
+	font-size: 250%;
+	font-weight: bold;
+	text-align: center;
+	color: #000099;
+}
+
+ul {
+	color: #000000;
+	padding: 0;
+	top-margin: 1;
+	left-margin: 0;
 }
 
 a {
-  color: #00B7FF;
+  color: #000000;
 }
+
 
 
 

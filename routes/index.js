@@ -28,9 +28,28 @@ router.get('/', function(req, res, next) {
 		console.log(taskList);
 		res.render('index', { title: 'My fancy task list', taskList: taskList });
 	})
-  
-
 });
+
+router.delete('/task/:id', function(req, res, next) {
+	var id = req.params.id;
+	Task.findById(id, function(err, task){
+		if(err){
+			res.send(500, "Failed to update id: " + id);
+		} else if(task){
+			task.completed = !task.completed; 
+			task.save(function(err){
+				if(err){
+					res.send(500, "Failed to update id: " + id);
+				} else {
+					res.send("successfully maked task as completed: " + id);
+				}
+			})
+		} else {
+			res.send(404, "Unable to locate taks with id: " + id);
+		}
+	})
+})
+
 
 router.post('/', function(req, res, next){
 	console.log("BODY", req.body);
@@ -40,8 +59,6 @@ router.post('/', function(req, res, next){
 			res.render('index', { title: 'My fancy task list', taskList: taskList});
 		});
 	});
-	
-	
 })
 
 module.exports = router;

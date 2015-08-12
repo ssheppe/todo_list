@@ -1,26 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheets" type="text/css" href = "style.css">
+	<header>TO DO LIST</header>
+	<link rel='stylesheet' href='/stylesheets/bootstrap-3.3.5-dist/css/bootstrap.min.css' media='all'>
+	<link rel="stylesheet" href="/stylesheets/style.css" type="text/css" media="all">
+	<script>
+		function myFunction(id){
+			var req = new XMLHttpRequest(); 
+			req.open("DELETE", "/task/" + id, true);
+			req.onreadystatechange = function () {
+				if (req.readyState != 4 || req.status != 200) return; 
+				console.log(req.responseText);
+			};
+			req.send();
+		}
+	</script>
+
 </head>
 
 <body>
 	<form method="post">
 		<input type="text" name="task" placeholder="to do item"/>
-		<input type="submit" value="Add to do"/>
+		<input class="btn btn-default" type="submit" value="Add to do"/>
 		
 	</form>
-	<ul>
+	<div class="col-sm-4">
+      <div class="list-group">
+        <a href="#" class="list-group-item active">
+          Todo list
+        </a>
+        
 
 		{% for task in taskList %}
 			<li>
-				<label>
-					<input type="checkbox" > {{ task.description || ''}}
-				</label>
+
+						<a href="#" class="list-group-item">
+					<label>				 
+					 <input onclick="myFunction('{{task.id}}')" {% if task.completed %} checked {% endif %} type="checkbox" >
+							{{ task.description || ''}}
+					</label>
+							</a>
+					
 			</li>
+
 		{% endfor%}
-		
-	</ul>
+      </div>
+    </div>
 
 </body>
 
