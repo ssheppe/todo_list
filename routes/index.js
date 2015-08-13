@@ -75,9 +75,7 @@ router.post('/', function(req, res, next){
 	console.log("BODY", req.body);
 	var task = new Task({description: req.body.task});
 	task.save(function(err){
-		Task.find({}, function (err, taskList){
-			res.render('index', { title: 'My fancy task list', taskList: taskList});
-		});
+		res.redirect('/');
 	});
 })
 
