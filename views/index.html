@@ -7,13 +7,17 @@
 
 {% block content %}
 	<div class="page-header">
-      	<h1>Welcome</h1>
-		
-      	<div class="boxed">
+      	<h1>Welcome {{ user && user.name || ''}}</h1>
+		<div class="boxed">
 			<h4>
-				<a href="/register">Register</a>
-				<a href="/login">Login</a> 
+				{% if user %}
+					<a href="/tasks">Check your tasks</a>
+      			{% else %}
+					<a href="/register">Register</a>
+					<a href="/login">Login</a> 
+				{% endif %}
 			</h4>
 		</div>
+		
     </div>	
 {% endblock %}
