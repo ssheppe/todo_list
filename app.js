@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
 var bcrypt = require('bcrypt');
+SALT_WORK_FACTOR = 10;
 
 // var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -76,7 +77,7 @@ var taskSchema = mongoose.Schema({
 var userSchema = mongoose.Schema({
   name: {type: String, required: true},
   username: { type: String, unique : true, required : true, index: true},
-  password: String,
+  password: { type: String, required: true},
   created_date: { type: Date, default: Date.now },
   updated_date: { type: Date, default: Date.now },
   email: { type: String, unique : true, required : true, index: true }
@@ -85,6 +86,7 @@ var userSchema = mongoose.Schema({
 
 var Task = mongoose.model('Task', taskSchema);
 var User = mongoose.model('User', userSchema);
+
 
 /* GET home page. */
 app.get('/', function(req, res, next) {
