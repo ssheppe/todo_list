@@ -1,5 +1,7 @@
+
+
 body {
-  padding: 50px;
+ /* padding: 50px;*/
   font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; 
   background-image: url("/images/bartonsprings.jpg");
   width: 100%;
@@ -7,6 +9,7 @@ body {
   background-position: center; 
   color: #000000;
   background-color: #D8D8D8;
+  margin: 0;
 }
 
 .btn {
@@ -30,6 +33,26 @@ body {
 	cursor: pointer;
 }
 
+.headerReplacement{
+	color: #8F6BB2;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    margin-top: -1px;
+    padding: 10px 10px 10px 10px;
+}
+
+.boxed{
+    width: 450px;
+    padding: 20px;
+    top: 20%;
+    left: 50%;
+    /* text-align: center; */
+    background-color: rgba(0,0,0,.5);
+    color: #CCC;
+    overflow: hidden;
+    margin-left: -235px;
+    position: absolute;
+}
 
 h1 {
 	font-size: 350%;
@@ -42,16 +65,6 @@ h1 {
     -2px 2px #000,
      2px 2px #000;
 }
-/*
-
-ul {
-	color: red;
-	padding: 0;
-	top-margin: 1;
-	left-margin: 0;
-}
-
-*/
 
 a {
   text-align: center; 
