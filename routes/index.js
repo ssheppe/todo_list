@@ -14,19 +14,25 @@ var taskSchema = mongoose.Schema({
 	created_date: { type: Date, default: Date.now },
 	updated_date: { type: Date, default: Date.now },
 	completed: { type: Boolean, default: false },
-	deleted: {type: Boolean, default: false}
+	deleted: {type: Boolean, default: false},
+	username: String,
+	password: String
 });
 
 var Task = mongoose.model('Task', taskSchema);
 
-
-
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	res.render('index', { title: 'My fancy task list', taskList: taskList });
+});
+
+
+
+
+router.get('/task', function(req, res, next) {
 	Task.find({deleted: false}, function (err, taskList){
 		if (err) return console.error(err);
-		console.log(taskList);
+	//	console.log(taskList);
 		res.render('index', { title: 'My fancy task list', taskList: taskList });
 	})
 });
@@ -71,11 +77,11 @@ router.put('/task/:id', function(req, res, next) {
 	})
 })
 
-router.post('/', function(req, res, next){
-	console.log("BODY", req.body);
+router.post('/task', function(req, res, next){
+//	console.log("BODY", req.body);
 	var task = new Task({description: req.body.task});
 	task.save(function(err){
-		res.redirect('/');
+		res.redirect('/task');
 	});
 })
 
