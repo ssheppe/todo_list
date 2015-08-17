@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}List{% endblock %}
+
+{% block head %}
+  {% parent %}
+
+  	<link rel="stylesheet" href="/stylesheets/style.css" type="text/css" media="all">
+
+	<script>
+		function markTaskCompleted(id){
+			var req = new XMLHttpRequest(); 
+			
+			req.open("PUT", "/tasks/" + id, true);
+			
+			req.onreadystatechange = function () {
+				if (req.readyState != 4 || req.status != 200){
+					return;	
+				}  
+			};
+			
+			req.send();
+		}
+		 
+		function deleteTask(id){
+			var req = new XMLHttpRequest(); 
+			
+			req.open("DELETE", "/tasks/" + id, true);
+			
+			req.onreadystatechange = function () {
+				if (req.readyState != 4 || req.status != 200){
+					return;	
+				}  
+			};
+			
+			req.send();
+		}
+
+
+		$( document ).ready(function() {
+			$(":checkbox").each(function(){
+				if($(this).is(':checked')){
+					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
+					$(this).insertAfter()
+				}
+			});
+
+			$(":checkbox").on("change", function(){
+				console.log($(this).is(":checked"));
+
+				if($(this).is(":checked")){
+					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
+				}
+				else{
+					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "none");
+				}
+			});
+
+			$(".glyphicon-trash").on("click", function(){
+				console.log("here in trash");
+				$(this).parent().slideUp();
+			})
+		});
+
+		
+		
+
+	</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+	<div class="page-header">
+      	<h1>TO DO LIST</h1>
+    </div>	
+	<div>
+
+	<div class="col-sm-12">
+		<form method="post">
+			<input type="text" name="task" placeholder="to do item"/>
+			<input type="submit" class="btn btn-default btn-sm"></input>
+		</form>
+	</div>
+
+	<div class="col-sm-8 top-buffer">
+      <div id="my-list" class="list-group">
+		{% for task in taskList %}
+			<div class="list-group-item">
+				<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
+					 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
+					 	{{ task.description || ''}}
+				</label>
+
+			
+				<span onclick="deleteTask('{{task.id}}')" class="pull-right glyphicon glyphicon-trash" aria-hidden="true"></span>
+
+
+			</div>		
+		{% endfor%}
+      </div>
+    </div>
+ </div>
+
+{% endblock %}
+
