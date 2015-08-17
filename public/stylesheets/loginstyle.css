@@ -1,0 +1,44 @@
+body {
+/*  padding: 50px;*/
+  font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  color: black;
+  background-color: #D8D8D8;
+  margin: 0;
+}
+
+input[type=submit] {
+	border: 0 none;
+	background-color: white;
+	color: black;
+} 
+
+input[type=submit]:hover {
+	background-color: orange;
+	color: black;
+}
+
+/*.boxed{
+    width: 450px;
+    padding: 20px;
+    top: 20%;
+    left: 50%;
+    background-color: rgba(0,0,0,.5);
+    color: #CCC;
+    overflow: hidden;
+    margin-left: -235px;
+    position: absolute;
+}*/
+
+.top-buffer{
+	margin-top: 15px;
+}
+
+.error {
+	color: #AA0000;
+}
+
+form{
+	text-align: center;
+}
