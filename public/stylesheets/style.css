@@ -30,6 +30,7 @@ body {
 	cursor: pointer;
 }
 
+
 h1 {
 	font-size: 350%;
 	font-weight: bold;
@@ -50,12 +51,21 @@ ul {
 	left-margin: 0;
 }
 
-
+*/
 
 a {
-  color: #000000;
+  text-align: center; 
+  display: block;
+  margin: 0;
+  color: white;
 }
-*/
+
+a:hover{
+	color: orange;
+}
+
+
+
 
 
 
