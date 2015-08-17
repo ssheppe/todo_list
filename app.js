@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
+var bcrypt = require('bcrypt');
 
 // var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -51,9 +52,11 @@ app.use(logger('dev'));
 // catch 404 and forward to error handler
 
 app.use(function(req, res, next){
-  if(req.url != '/login' || req.url != '/logout' || req.url != '/register'){
-    next();
-  } else if(!req.session.user){
+  console.log(req.url);
+  console.log(req.session.user);
+  var isWhiteListedUrl = (req.url == '/' || req.url == '/login' || req.url == '/logout' || req.url == '/register'); 
+  res.locals.user = req.session.user;
+  if(!req.session.user && !isWhiteListedUrl){
     res.redirect('/login');
   } else {
     next();
@@ -67,10 +70,11 @@ var taskSchema = mongoose.Schema({
   updated_date: { type: Date, default: Date.now },
   completed: { type: Boolean, default: false },
   deleted: {type: Boolean, default: false},
-  user_id: String
+  user_id: { type: String, required: true, index: true}
 });
 
 var userSchema = mongoose.Schema({
+  name: {type: String, required: true},
   username: { type: String, unique : true, required : true, index: true},
   password: String,
   created_date: { type: Date, default: Date.now },
@@ -102,6 +106,7 @@ app.post('/register', function(req, res){
   var password = req.body.password;
   var confirm_password = req.body.confirm_password;
   var email = req.body.email;
+
   var user = new User({name: name, email: email, username: username, password: password});
 
   if(password == confirm_password){
@@ -120,7 +125,6 @@ app.post('/register', function(req, res){
 });
 
 app.get('/login', function(req, res, next) {
-  console.log(req.session.user)
   if(req.session.user){
     res.redirect('/tasks');
   } else {
@@ -156,13 +160,6 @@ app.get('/layout', function(req, res, next) {
   res.render('layout', { title: 'My fancy task list' });
 });
 
-app.get('/tasks', function(req, res, next) {
-  Task.find({deleted: false}, function (err, taskList){
-    if (err) return console.error(err);
-  //  console.log(taskList);
-    res.render('tasks', { title: 'My fancy task list', taskList: taskList });
-  })
-});
 
 app.post('/login', function(req, res){
   var username = req.body.username;
@@ -170,6 +167,13 @@ app.post('/login', function(req, res){
 
   res.send("success");
 })
+
+app.get('/tasks', function(req, res, next) {
+  Task.find({deleted: false, user_id: req.session.user && req.session.user._id}, function (err, taskList){
+    if (err) return console.error(err);
+    res.render('tasks', { title: 'My fancy task list', taskList: taskList });
+  })
+});
 
 app.delete('/tasks/:id', function(req, res, next) {
   var id = req.params.id;
@@ -213,15 +217,11 @@ app.put('/tasks/:id', function(req, res, next) {
 
 app.post('/tasks', function(req, res, next){
 //  console.log("BODY", req.body);
-  var task = new Task({description: req.body.task});
+  var task = new Task({description: req.body.task, user_id: req.session.user && req.session.user._id});
   task.save(function(err){
     res.redirect('/tasks');
   });
 })
-
-
-
-
 
 
 
