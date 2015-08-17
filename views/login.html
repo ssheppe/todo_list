@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+  {% parent %}
+  <link rel="stylesheet" href="/stylesheets/loginstyle.css" type="text/css" media="all">
+  <script>
+
+           $(document).ready(function(){ 
+                console.log('submit here');
+                $("#login").submit(checkPasswordonSubmit); 
+            });
+            function checkPasswordonSubmit(event){
+                
+                var user = $("#username").val();
+                var password = $("#password").val();
+                console.log('pass here');
+            }
+   </script>
+{% endblock %}
+
+{% block content %}
+  <form id="login" action="/login" method="post">
+     <div class="boxed">
+
+      <div>
+        <div class="col-md-6">
+            <label>Username:</label>
+        </div>
+        <div class="col-md-6">
+            <input type="text" name="username"/>
+        </div>
+      </div>
+
+      <div>
+        <div class="col-md-6">
+            <label>Password:</label>
+        </div>
+        <div class="col-md-6">
+            <input id="password" type="password" name="password"/>
+        </div>
+      </div>
+
+      <div>
+        <div class="col-md-12 top-buffer">
+            <input class="top-buffer" type="submit" value="Submit"/>
+        </div>
+
+        <div>  
+            <p id="password_error" class="error {%if !error %} hide {% endif %} col-md-12 top-buffer"><font color="#CF1919">{{error}}</font></p>
+        </div>
+      </div>
+
+     <!--  <div>
+        <input class="top-buffer" type="submit" value="Submit" />
+      </div> -->
+    </div>
+  </form>
+{% endblock %}
+
