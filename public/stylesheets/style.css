@@ -1,26 +1,53 @@
+/* colors:
+      dark blue: #334455;
+      light blue: #bbddff;
+      gray: #778899;
+      sky blue: #77ccff;
+      turquoise: 22aaaa; 
+      greenish: 66bbbb;
+      tan: faf0e6; 
+      light pink: eebbaa;
+      medium pink: ee7766;
+      whiteish color? e1e1e1;
+      background gray: #F0F0EE;
+      button hover brown: 968E85;
+*/
 
+/* fonts:
+    raleway
+    francois one
+    quattrocento sans
+*/
 
 body {
  /* padding: 50px;*/
-  font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; 
-  background-image: url("/images/bartonsprings.jpg");
+  /*font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; */
+ /* background-image: url("/images/bsdark.jpg"); */
+  font-family: 'Raleway', sans-serif;
   width: 100%;
   height: 100%;
   background-position: center; 
-  color: #000000;
-  background-color: #D8D8D8;
+  color: black;
+  background-color: #F0F0EE;
   margin: 0;
 }
 
 .btn {
 	border: 0 none;
-	background-color: #597D8E;
-	color: white;
+	background-color: #22aaaa;
+  color: black;
 } 
 
 .btn:hover {
-	background-color: #394A5E;
-	color:white;
+	background-color: #968E85;
+  color: black;
+}
+
+.logout{
+	position: absolute;
+    top: 80%;
+    left: 48%;
+
 }
 
 .top-buffer { margin-top:20px; !important}
@@ -34,10 +61,25 @@ body {
 }
 
 .headerReplacement{
-	color: #8F6BB2;
+	/*color: #8F6BB2;*/
+	color: #F0F0EE;
     width: 100%;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: #334455;
     margin-top: -1px;
+    padding: 10px 10px 10px 10px;
+    text-align: left;
+}
+
+footer {
+	position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 40px;
+    width: 100%;
+    text-align: center;
+    color: #F0F0EE;
+    width: 100%;
+    background-color: #334455;
     padding: 10px 10px 10px 10px;
 }
 
@@ -47,10 +89,10 @@ body {
     top: 20%;
     left: 50%;
     /* text-align: center; */
-    background-color: rgba(0,0,0,.5);
-    color: #CCC;
+    background-color: #eebbaa;
+    color: black;
     overflow: hidden;
-    margin-left: -235px;
+    margin-left: -225px;
     position: absolute;
 }
 
@@ -58,23 +100,30 @@ h1 {
 	font-size: 350%;
 	font-weight: bold;
 	text-align: center;
-	color: orange;
-	text-shadow: 
+	/*color: #334455;*/
+  color: #66bbbb;
+  text-transform: lowercase;
+/*	text-shadow: 
 	-2px -2px #000,  
     2px -2px #000,
     -2px 2px #000,
-     2px 2px #000;
+     2px 2px #000;*/
+}
+
+.no-top-buffer{
+  margin-top: -25px;
 }
 
 a {
   text-align: center; 
   display: block;
   margin: 0;
-  color: white;
+  color: #ee7766;
+  /*text-shadow: 0 0 5px rgba(0, 0, 0, 1);*/
 }
 
 a:hover{
-	color: orange;
+	color: #778899;
 }
 
 
