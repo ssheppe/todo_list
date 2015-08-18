@@ -74,15 +74,15 @@
 {% block content %}
 
 
-	<div class="page-header">
+<!-- 	<div class="page-header">
       	<h1>TO DO LIST</h1>
-    </div>	
+    </div>	 -->
 	<div>
 
 	<div class="col-sm-12">
 		<form method="post">
 			<input type="text" name="task" placeholder="to do item"/>
-			<input type="submit" class="btn btn-default btn-sm"></input>
+			<input type="submit" value="submit" class="btn btn-default btn-sm"></input>
 		</form>
 	</div>
 
@@ -102,6 +102,28 @@
 			</div>		
 		{% endfor%}
       </div>
+    </div>
+
+<!--     <div class="col-sm-8 no-top-buffer">
+      <div id="my-list" class="list-group">
+		{% for task in taskList %}
+			<div class="list-group-item">
+				<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
+					 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
+					 	{{ task.description || ''}}
+				</label>
+
+			
+				<span onclick="deleteTask('{{task.id}}')" class="pull-right glyphicon glyphicon-trash" aria-hidden="true"></span>
+
+
+			</div>		
+		{% endfor%}
+      </div>
+    </div>
+ -->
+    <div>
+    	<a class='logout btn btn-default' href='/logout' role='button'>log out</a>
     </div>
  </div>
 
