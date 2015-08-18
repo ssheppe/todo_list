@@ -84,6 +84,14 @@ var userSchema = mongoose.Schema({
 });
 
 
+//bcrypt 
+// userSchema.pre('save', function(next) {                                                                                                                                        
+//     if(this.password) {                                                                                                                                                                                                                                                                                            
+//         this.password  = bcrypt.hashSync(this.password, SALT_WORK_FACTOR)                                                                                                                
+//     }                                                                                                                                                                          
+//     next()                                                                                                                                                                     
+// })  
+
 var Task = mongoose.model('Task', taskSchema);
 var User = mongoose.model('User', userSchema);
 
@@ -134,9 +142,14 @@ app.get('/login', function(req, res, next) {
   }
 });
 
+
 app.post('/login', function(req, res){
   var user = req.body.username;
   var password = req.body.password;
+
+  //bcrypt
+  // password = bcrypt.hashSync(password, SALT_WORK_FACTOR);
+  // console.log(password);
   User.findOne({username: user}, function(err, user){
     if(err){
         res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
