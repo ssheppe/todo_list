@@ -1,21 +1,21 @@
 body {
 /*  padding: 50px;*/
-  font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; 
+  /*font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; */
+  font-family: 'Raleway', sans-serif;
   background-position: center; 
   background-repeat: no-repeat;
   color: black;
-  background-color: #D8D8D8;
   margin: 0;
 }
 
 input[type=submit] {
 	border: 0 none;
-	background-color: white;
+	background-color: #f0f0ee;
 	color: black;
 } 
 
 input[type=submit]:hover {
-	background-color: orange;
+	background-color: #968E85;
 	color: black;
 }
 
