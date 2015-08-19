@@ -18,7 +18,7 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/todo_list');
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 mongoose.connection.once('open', function (callback) {
   console.log("successfully connected");
@@ -55,10 +55,11 @@ app.use(logger('dev'));
 app.use(function(req, res, next){
   // console.log(req.url);
   // console.log(req.session.user);
-  var isWhiteListedUrl = (req.url == '/' || req.url == '/login' || req.url == '/logout' || req.url == '/register'); 
+  var isWhiteListedUrl = (req.url == '/500' || req.url == '/404' || req.url == '/' || req.url == '/login' 
+        || req.url == '/logout' || req.url == '/register'); 
   res.locals.user = req.session.user;
   if(!req.session.user && !isWhiteListedUrl){
-    res.redirect('/login');
+    res.redirect('/404');
   } else {
     next();
   }
@@ -135,7 +136,8 @@ app.post('/register', function(req, res){
   if(password == confirm_password){
     user.save(function(err){
       if(err){
-        res.status(500).send('got error: ' + err.message);
+        // res.status(500).send('got error: ' + err.message);
+        res.redirect('/404');
       } else {
         //  res.send("success register");
             console.log(name);
@@ -143,7 +145,8 @@ app.post('/register', function(req, res){
       }
     });
   } else {
-        res.status(500).send('got error: password mismatch');
+        // res.status(500).send('got error: password mismatch');
+         res.redirect('/404');
   }
 });
 
@@ -164,11 +167,14 @@ app.post('/login', function(req, res){
   // console.log(password);
   User.findOne({username: user}, function(err, user){
     if(err){
-        res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
+        // res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
+        res.redirect('500');
       } else if(!user){
-        res.status(404).render('login', { title: 'My fancy task list', error: "user not found" });
+        res.redirect('404');
+        //res.status(404).render('login', { title: 'My fancy task list', error: "user not found" });
       } else if(user.password != password){
-        res.status(500).render('login', { title: 'My fancy task list', error: "invalid password or username" });
+        res.redirect('500');
+       // res.status(500).render('login', { title: 'My fancy task list', error: "invalid password or username" });
       } else{
         req.session.user = user;
         res.redirect('/tasks');
@@ -206,18 +212,21 @@ app.delete('/tasks/:id', function(req, res, next) {
   var id = req.params.id;
   Task.findById(id, function(err, task){
     if(err){
-      res.send(500, "Failed to update id: " + id);
+     // res.send(500, "Failed to update id: " + id);
+     res.redirect('500');
     } else if(task){
       task.deleted = true; 
       task.save(function(err){
         if(err){
-          res.send(500, "Failed to update id: " + id);
+          res.redirect('500');
+          //res.send(500, "Failed to update id: " + id);
         } else {
           res.send("successfully marked task as deleted " + id);
         }
       })
     } else {
-      res.send(404, "Unable to locate task with id: " + id);
+     res.redirect('404');
+     // res.send(404, "Unable to locate task with id: " + id);
     }
   })
 })
@@ -226,18 +235,21 @@ app.put('/tasks/:id', function(req, res, next) {
   var id = req.params.id;
   Task.findById(id, function(err, task){
     if(err){
-      res.send(500, "Failed to update id: " + id);
+     res.redirect('500');
+     // res.send(500, "Failed to update id: " + id);
     } else if(task){
       task.completed = !task.completed; 
       task.save(function(err){
         if(err){
-          res.send(500, "Failed to update id: " + id);
+         res.redirect('500');
+         // res.send(500, "Failed to update id: " + id);
         } else {
           res.send("successfully marked task as completed: " + id);
         }
       })
     } else {
-      res.send(404, "Unable to locate task with id: " + id);
+     res.redirect('404');
+     // res.send(404, "Unable to locate task with id: " + id);
     }
   })
 })
@@ -249,7 +261,15 @@ app.post('/tasks', function(req, res, next){
   });
 })
 
+app.get('/404', function(req, res, next) {
+  // console.log('\n\n\n\n HEREREE \n\n\n')
+  res.render('404', { title: 'My fancy task list'});
+});
 
+app.get('/500', function(req, res, next) {
+  // console.log('\n\n\n\n HEREREE \n\n\n')
+  res.render('500', { title: 'My fancy task list'});
+});
 
 // app.post('/',
 //   passport.authenticate('local', {
