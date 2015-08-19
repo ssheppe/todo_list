@@ -53,8 +53,8 @@ app.use(logger('dev'));
 // catch 404 and forward to error handler
 
 app.use(function(req, res, next){
-  console.log(req.url);
-  console.log(req.session.user);
+  // console.log(req.url);
+  // console.log(req.session.user);
   var isWhiteListedUrl = (req.url == '/' || req.url == '/login' || req.url == '/logout' || req.url == '/register'); 
   res.locals.user = req.session.user;
   if(!req.session.user && !isWhiteListedUrl){
@@ -83,14 +83,27 @@ var userSchema = mongoose.Schema({
   email: { type: String, unique : true, required : true, index: true }
 });
 
+userSchema.pre('save', function(next) {
+    var user = this;
 
-//bcrypt 
-// userSchema.pre('save', function(next) {                                                                                                                                        
-//     if(this.password) {                                                                                                                                                                                                                                                                                            
-//         this.password  = bcrypt.hashSync(this.password, SALT_WORK_FACTOR)                                                                                                                
-//     }                                                                                                                                                                          
-//     next()                                                                                                                                                                     
-// })  
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+        if (err) return next(err);
+
+        // hash the password along with our new salt
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            if (err) return next(err);
+
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
+});
+
 
 var Task = mongoose.model('Task', taskSchema);
 var User = mongoose.model('User', userSchema);
@@ -147,7 +160,6 @@ app.post('/login', function(req, res){
   var user = req.body.username;
   var password = req.body.password;
 
-  //bcrypt
   // password = bcrypt.hashSync(password, SALT_WORK_FACTOR);
   // console.log(password);
   User.findOne({username: user}, function(err, user){
@@ -231,7 +243,6 @@ app.put('/tasks/:id', function(req, res, next) {
 })
 
 app.post('/tasks', function(req, res, next){
-//  console.log("BODY", req.body);
   var task = new Task({description: req.body.task, user_id: req.session.user && req.session.user._id});
   task.save(function(err){
     res.redirect('/tasks');
