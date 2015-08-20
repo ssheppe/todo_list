@@ -43,17 +43,10 @@
 		}
 
 
-		$( document ).ready(function() {
-			$(function(){
-				$( "#sortable" ).sortable();
-    			$( "#sortable" ).disableSelection();
-  			});
-	
-
+		$( document ).ready(function() {	
 			$(":checkbox").each(function(){
 				if($(this).is(':checked')){
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
-					// $(this).insertAfter()
 				}
 			});
 
@@ -62,11 +55,16 @@
 
 				if($(this).is(":checked")){
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
-			
+  					$(this).closest('div').slideUp(500,function(){
+  						$(this).show().closest('div').hide().appendTo('#my-list-done').slideDown(500).animate({opacity: 1.0});
+
+  					})
 				}
 				else{
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "none");
-			
+					$(this).closest('div').slideUp(500,function(){
+  						$(this).show().closest('div').hide().appendTo('#my-list').slideDown(500).animate({opacity: 1.0});
+  					})
 				}
 			});
 
@@ -75,10 +73,6 @@
 				$(this).parent().slideUp();
 			})
 		});
-
-		
-		
-
 	</script>
 
 {% endblock %}
@@ -86,10 +80,6 @@
 
 {% block content %}
 
-
-<!-- 	<div class="page-header">
-      	<h1>TO DO LIST</h1>
-    </div>	 -->
 	<div>
 
 	<div class="col-sm-12">
@@ -103,7 +93,7 @@
 		 <div class="col-sm-8 top-buffer">
 	      <div id="my-list" class="list-group">
 			{% for task in taskList %}
-				{% if task.completed %}
+				{% if !task.completed %}
 					<div class="list-group-item">
 						<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
 							 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
@@ -118,7 +108,7 @@
 	    <div class="col-sm-8">
 	      <div id="my-list-done" class="list-group">
 			{% for task in taskList %}
-				{% if !task.completed %}
+				{% if task.completed %}
 					<div class="list-group-item">
 						<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
 							 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
