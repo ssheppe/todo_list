@@ -86,12 +86,18 @@
 			var	completed = $('#my-list-done .list-group-item').length;
 			var incomplete = $('#my-list .list-group-item').length;
 			var totalTasks = completed + incomplete; 
-			updateGraph('chart', 
+			console.log(totalTasks);
+			if(totalTasks==completed){
+				updateGraph('chart', 
+					[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
+			}else{
+				updateGraph('chart', 
 				[
 				{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
 				{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
 				]
 			);
+			}
 			$(":checkbox").each(function(){
 				if($(this).is(':checked')){
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
@@ -106,12 +112,17 @@
 						completed = $('#my-list-done .list-group-item').length;
 						incomplete = $('#my-list .list-group-item').length;
 						totalTasks = completed + incomplete;
-						updateGraph('chart', 
+						if(totalTasks==completed){
+							updateGraph('chart', 
+								[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
+						}else{
+							updateGraph('chart', 
 							[
 							{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
 							{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
 							]
 						);
+						}
   					})
 				}
 				else{
@@ -121,12 +132,17 @@
 						completed = $('#my-list-done .list-group-item').length;
 						incomplete = $('#my-list .list-group-item').length;
 						totalTasks = completed + incomplete;
-						updateGraph('chart', 
+						if(totalTasks==completed){
+							updateGraph('chart', 
+								[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
+						}else{
+							updateGraph('chart', 
 							[
 							{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
 							{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
 							]
 						);
+						}
   					})
 				}
 			});
