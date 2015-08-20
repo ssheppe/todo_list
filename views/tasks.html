@@ -9,10 +9,48 @@
   	<link rel="stylesheet" href="/stylesheets/style.css" type="text/css" media="all">
 
   	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
 	<script>
+
+		function updateGraph(chartDivId, data, width, height){
+			var w = width || 400;
+			var h = height || 400;
+			var r = h/2;
+
+			data = data || [];
+			//[{"label":"complete", "value": 40, "color":"#66BBBB"}, 
+			//	          {"label":"incomplete", "value": 60, "color":"#ee7766"}];
+			$('#' + chartDivId).html('');
+
+			var vis = d3.select('#' + chartDivId).append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+			var pie = d3.layout.pie().value(function(d){return d.value;});
+
+			// declare an arc generator function
+			var arc = d3.svg.arc().outerRadius(r);
+
+			// select paths, use arc generator to draw
+			var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+			arcs.append("svg:path")
+			    .attr("fill", function(d, i){
+			        return d.data.color;
+			    })
+			    .attr("d", function (d) {
+			        // log the result of the arc generator to show how cool it is :)
+			        console.log(arc(d));
+			        return arc(d);
+			    });
+
+			// add the text
+			arcs.append("svg:text").attr("transform", function(d){
+						d.innerRadius = 0;
+						d.outerRadius = r;
+			    return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
+			    return data[i].label;}
+			);
+		}
 
 		function markTaskCompleted(id){
 			var req = new XMLHttpRequest(); 
@@ -43,7 +81,17 @@
 		}
 
 
-		$( document ).ready(function() {	
+		$( document ).ready(function() {
+
+			var	completed = $('#my-list-done .list-group-item').length;
+			var incomplete = $('#my-list .list-group-item').length;
+			var totalTasks = completed + incomplete; 
+			updateGraph('chart', 
+				[
+				{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
+				{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
+				]
+			);
 			$(":checkbox").each(function(){
 				if($(this).is(':checked')){
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
@@ -51,19 +99,34 @@
 			});
 
 			$(":checkbox").on("change", function(){
-				console.log($(this).is(":checked"));
-
 				if($(this).is(":checked")){
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
   					$(this).closest('div').slideUp(500,function(){
   						$(this).show().closest('div').hide().appendTo('#my-list-done').slideDown(500).animate({opacity: 1.0});
-
+						completed = $('#my-list-done .list-group-item').length;
+						incomplete = $('#my-list .list-group-item').length;
+						totalTasks = completed + incomplete;
+						updateGraph('chart', 
+							[
+							{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
+							{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
+							]
+						);
   					})
 				}
 				else{
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "none");
 					$(this).closest('div').slideUp(500,function(){
   						$(this).show().closest('div').hide().appendTo('#my-list').slideDown(500).animate({opacity: 1.0});
+						completed = $('#my-list-done .list-group-item').length;
+						incomplete = $('#my-list .list-group-item').length;
+						totalTasks = completed + incomplete;
+						updateGraph('chart', 
+							[
+							{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
+							{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
+							]
+						);
   					})
 				}
 			});
@@ -72,6 +135,8 @@
 				console.log("here in trash");
 				$(this).parent().slideUp();
 			})
+
+
 		});
 	</script>
 
@@ -88,41 +153,49 @@
 			<input type="submit" value="submit" class="btn btn-default btn-sm"></input>
 		</form>
 	</div>
+	<div class="col-sm-12">
+		<div class="col-sm-6">
+			<div class="col-sm-9 top-buffer">
+		      <div id="my-list" class="list-group">
+				{% for task in taskList %}
+					{% if !task.completed %}
+						<div class="list-group-item">
+							<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
+								 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
+								 	{{ task.description || ''}}
+							</label>
+							<span onclick="deleteTask('{{task.id}}')" class="pull-right glyphicon glyphicon-trash" aria-hidden="true"></span>
+						</div>	
+					{% endif %}
+				{% endfor%}
+		      </div>
+		    </div>
+		    <div class="col-sm-9">
+		      <div id="my-list-done" class="list-group">
+				{% for task in taskList %}
+					{% if task.completed %}
+						<div class="list-group-item">
+							<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
+								 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
+								 	{{ task.description || ''}}
+							</label>
 
-	<div>
-		 <div class="col-sm-8 top-buffer">
-	      <div id="my-list" class="list-group">
-			{% for task in taskList %}
-				{% if !task.completed %}
-					<div class="list-group-item">
-						<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
-							 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
-							 	{{ task.description || ''}}
-						</label>
-						<span onclick="deleteTask('{{task.id}}')" class="pull-right glyphicon glyphicon-trash" aria-hidden="true"></span>
-					</div>	
-				{% endif %}
-			{% endfor%}
-	      </div>
-	    </div>
-	    <div class="col-sm-8">
-	      <div id="my-list-done" class="list-group">
-			{% for task in taskList %}
-				{% if task.completed %}
-					<div class="list-group-item">
-						<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
-							 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
-							 	{{ task.description || ''}}
-						</label>
+							<span onclick="deleteTask('{{task.id}}')" class="pull-right glyphicon glyphicon-trash" aria-hidden="true"></span>
 
-						<span onclick="deleteTask('{{task.id}}')" class="pull-right glyphicon glyphicon-trash" aria-hidden="true"></span>
+						</div>	
+					
+					{% endif %}
+				{% endfor%}
+		      </div>
+		    </div>  
+		</div>
+		<div class="col-sm-5">
+			<div class="col-sm-4">
+				<div id='chart'>
+				</div>
+			</div>
+		</div>
 
-					</div>	
-				
-				{% endif %}
-			{% endfor%}
-	      </div>
-	    </div>  
 	</div>
 
 
