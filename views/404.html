@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block title %}404 Error{% endblock %}
+
+{% block head %}
+  {% parent %}
+
+  <style>
+
+  	div.img{
+	  	margin: 5px;
+	    padding: 5px;
+	    height: auto;
+	    width: auto;
+	    float: center;
+	    text-align: center;
+  	}
+
+  	div.img img {
+	    display: inline;
+	    margin: 5px;
+	    border: 1px solid #ffffff;
+	}
+
+  </style>
+{% endblock %}
+
+{% block content %}
+
+	<div class="img">
+		<img src="/images/dwight.jpg" alt="searc" align="middle">
+	</div>
+
+	<h1>whoops something went wrong</h1>
+
+	<a href='/'>start over</a>
+{% endblock %}
+
+
+
