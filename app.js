@@ -61,7 +61,7 @@ app.use(function(req, res, next){
         || req.url == '/logout' || req.url == '/register'); 
   res.locals.user = req.session.user;
   if(!req.session.user && !isWhiteListedUrl){
-    res.redirect('/404');
+    res.redirect('/login');
   } else {
     next();
   }
@@ -147,8 +147,8 @@ app.post('/register', function(req, res){
       }
     });
   } else {
-        // res.status(500).send('got error: password mismatch');
-         res.redirect('/404');
+       res.status(500).send('got error: password mismatch');
+         //res.redirect('/404');
   }
 });
 
@@ -166,11 +166,11 @@ app.post('/login', function(req, res){
   var password = req.body.password;
   User.findOne({username: user}, function(err, user){
     if(err){
-        // res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
-        res.redirect('500');
+       res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
+       // res.redirect('500');
       } else if(!user){
-        res.redirect('404');
-        //res.status(404).render('login', { title: 'My fancy task list', error: "user not found" });
+        //res.redirect('404');
+        res.status(404).render('login', { title: 'My fancy task list', error: "user not found" });
       } else {
         console.log('before bcrypt');
         bcrypt.compare(password, user.password, function(err, matched){
@@ -346,10 +346,17 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
 app.use(function(err, req, res, next) {
+  var viewTemplate = (err.status == 404) ? '404' : '500'; //terinary operator
   if(err){
     res.status(err.status || 500);
-    res.render('error', {
+    res.render(viewTemplate, {
       message: err.message,
       error: {}
     });
@@ -358,11 +365,7 @@ app.use(function(err, req, res, next) {
   }
   
 });
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+
 
 
 module.exports = app;
