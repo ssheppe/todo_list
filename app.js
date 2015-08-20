@@ -8,11 +8,13 @@ var swig = require('swig');
 var bcrypt = require('bcrypt');
 SALT_WORK_FACTOR = 10;
 
+
 // var routes = require('./routes/index');
 var users = require('./routes/users');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var app = express();
+
 
 var session = require('express-session');
 var mongoose = require('mongoose');
@@ -162,9 +164,6 @@ app.get('/login', function(req, res, next) {
 app.post('/login', function(req, res){
   var user = req.body.username;
   var password = req.body.password;
-
-  // password = bcrypt.hashSync(password, SALT_WORK_FACTOR);
-  // console.log(password);
   User.findOne({username: user}, function(err, user){
     if(err){
         // res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
@@ -172,14 +171,24 @@ app.post('/login', function(req, res){
       } else if(!user){
         res.redirect('404');
         //res.status(404).render('login', { title: 'My fancy task list', error: "user not found" });
-      } else if(user.password != password){
-        res.redirect('500');
-       // res.status(500).render('login', { title: 'My fancy task list', error: "invalid password or username" });
-      } else{
-        req.session.user = user;
-        res.redirect('/tasks');
+      } else {
+        console.log('before bcrypt');
+        bcrypt.compare(password, user.password, function(err, matched){
+            if(err){
+              console.log('failed bcrypt');
+              res.status(500).render('login', 
+                {  
+                  title: 'My fancy task list', 
+                  error: "invalid password or username" 
+                });
+            } else {
+              console.log('success bcrypt');
+              req.session.user = user;
+              res.redirect('/tasks');
+            }
+        });
       }
-    })
+    });
   });
 
 app.get('/logout', function(req, res){
@@ -269,6 +278,11 @@ app.get('/404', function(req, res, next) {
 app.get('/500', function(req, res, next) {
   // console.log('\n\n\n\n HEREREE \n\n\n')
   res.render('500', { title: 'My fancy task list'});
+});
+
+app.get('/image', function(req, res, next) {
+  // console.log('\n\n\n\n HEREREE \n\n\n')
+  res.render('image', { title: 'My fancy task list'});
 });
 
 // app.post('/',
