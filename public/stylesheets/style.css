@@ -19,7 +19,6 @@
     quattrocento sans
 */
 
-
 body {
  /* padding: 50px;*/
   /*font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; */
@@ -35,13 +34,13 @@ body {
 
 .btn {
 	border: 0 none;
-	background-color: #22aaaa;
-  color: black;
+	background-color: #66bbbb;
+  color: white;
 } 
 
 .btn:hover {
-	background-color: #968E85;
-  color: black;
+	background-color: #ee7766;
+  color: white;
 }
 
 .logout{
@@ -126,6 +125,14 @@ a {
 a:hover{
 	color: #778899;
 }
+/*
+#chart{ 
+    position: fixed;
+    visibility: show;
+    top: 20%;
+    left: 75%;
+    margin-left: -200px;
+} */
 
 
 
