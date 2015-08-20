@@ -202,6 +202,10 @@ app.get('/layout', function(req, res, next) {
   res.render('layout', { title: 'My fancy task list' });
 });
 
+app.get('/chart', function(req, res, next) {
+  res.render('chart', { title: 'My fancy task list' });
+});
+
 
 app.post('/login', function(req, res){
   var username = req.body.username;
