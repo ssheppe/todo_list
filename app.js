@@ -252,6 +252,7 @@ app.put('/tasks/:id', function(req, res, next) {
      // res.send(500, "Failed to update id: " + id);
     } else if(task){
       task.completed = !task.completed; 
+      console.log(task);
       task.save(function(err){
         if(err){
          res.redirect('500');
