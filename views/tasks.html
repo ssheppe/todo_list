@@ -105,11 +105,12 @@
 			});
 
 			$(":checkbox").on("change", function(){
+
 				if($(this).is(":checked")){
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
   					$(this).closest('div').slideUp(500,function(){
   						$(this).show().closest('div').hide().appendTo('#my-list-done').slideDown(500).animate({opacity: 1.0});
-						completed = $('#my-list-done .list-group-item').length;
+	  					completed = $('#my-list-done .list-group-item').length;
 						incomplete = $('#my-list .list-group-item').length;
 						totalTasks = completed + incomplete;
 						if(totalTasks==completed){
@@ -124,6 +125,7 @@
 						);
 						}
   					})
+
 				}
 				else{
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "none");
@@ -143,7 +145,7 @@
 							]
 						);
 						}
-  					})
+  					})		
 				}
 			});
 
