@@ -55,8 +55,6 @@ app.use(logger('dev'));
 // catch 404 and forward to error handler
 
 app.use(function(req, res, next){
-  // console.log(req.url);
-  // console.log(req.session.user);
   var isWhiteListedUrl = (req.url == '/500' || req.url == '/404' || req.url == '/' || req.url == '/login' 
         || req.url == '/logout' || req.url == '/register'); 
   res.locals.user = req.session.user;
@@ -114,7 +112,6 @@ var User = mongoose.model('User', userSchema);
 
 /* GET home page. */
 app.get('/', function(req, res, next) {
-  // console.log('\n\n\n\n HEREREE \n\n\n')
   res.render('index', { title: 'My fancy task list'});
 });
 
@@ -141,8 +138,6 @@ app.post('/register', function(req, res){
         // res.status(500).send('got error: ' + err.message);
         res.redirect('/404');
       } else {
-        //  res.send("success register");
-            console.log(name);
           res.redirect('/login');
       }
     });
@@ -167,22 +162,17 @@ app.post('/login', function(req, res){
   User.findOne({username: user}, function(err, user){
     if(err){
        res.status(500).render('login', { title: 'My fancy task list', error: "world is ending" });
-       // res.redirect('500');
-      } else if(!user){
-        //res.redirect('404');
+    } else if(!user){
         res.status(404).render('login', { title: 'My fancy task list', error: "user not found" });
-      } else {
-        console.log('before bcrypt');
+    } else {
         bcrypt.compare(password, user.password, function(err, matched){
             if(err){
-              console.log('failed bcrypt');
               res.status(500).render('login', 
                 {  
                   title: 'My fancy task list', 
                   error: "invalid password or username" 
                 });
             } else {
-              console.log('success bcrypt');
               req.session.user = user;
               res.redirect('/tasks');
             }
@@ -197,22 +187,6 @@ app.get('/logout', function(req, res){
   })
 });
 
-
-app.get('/layout', function(req, res, next) {
-  res.render('layout', { title: 'My fancy task list' });
-});
-
-app.get('/chart', function(req, res, next) {
-  res.render('chart', { title: 'My fancy task list' });
-});
-
-
-app.post('/login', function(req, res){
-  var username = req.body.username;
-  var password = req.body.password;
-
-  res.send("success");
-})
 
 app.get('/tasks', function(req, res, next) {
   Task.find({deleted: false, user_id: req.session.user && req.session.user._id}, function (err, taskList){
@@ -252,7 +226,6 @@ app.put('/tasks/:id', function(req, res, next) {
      // res.send(500, "Failed to update id: " + id);
     } else if(task){
       task.completed = !task.completed; 
-      console.log(task);
       task.save(function(err){
         if(err){
          res.redirect('500');

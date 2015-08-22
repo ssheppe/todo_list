@@ -92,13 +92,12 @@
 				updateGraph('chart', 
 					[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
 			}else{
-				console.log('update2');
 				updateGraph('chart', 
 				[
-				{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
-				{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
-				]
-			);
+					{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
+					{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
+					]
+				);
 			}
 			$(":checkbox").each(function(){
 				if($(this).is(':checked')){
@@ -106,16 +105,15 @@
 				}
 			});
 
-			$(":checkbox").on("change", function(){
-				
+			$(":checkbox").on("change", function(e){
+				e.preventDefault();
+				var itemId = $(this).attr('id');
+				markTaskCompleted(itemId);
 				if($(this).is(":checked")){
-					markTaskCompleted($(this).attr('id'));
-					console.log($(this).attr('id'));
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
   					$(this).closest('div').slideUp(500,function(){
   						$(this).show().closest('div').hide().appendTo('#my-list-done').slideDown(500).animate({opacity: 1.0});
-
-	  					completed = $('#my-list-done .list-group-item').length;
+						completed = $('#my-list-done .list-group-item').length;
 						incomplete = $('#my-list .list-group-item').length;
 						totalTasks = completed + incomplete;
 						if(totalTasks==completed){
@@ -137,6 +135,7 @@
 				else{
 					$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "none");
 					$(this).closest('div').slideUp(500,function(){
+
   						$(this).show().closest('div').hide().appendTo('#my-list').slideDown(500).animate({opacity: 1.0});
 						completed = $('#my-list-done .list-group-item').length;
 						incomplete = $('#my-list .list-group-item').length;
@@ -189,7 +188,7 @@
 				{% for task in taskList %}
 					{% if !task.completed %}
 						<div class="list-group-item">
-							<label for='{{task.id}}' onclick="markTaskCompleted('{{task.id}}')">
+							<label for='{{task.id}}'">
 								 <input id='{{task.id}}' {% if task.completed %} checked {% endif %} type="checkbox" >
 								 	{{ task.description || ''}}
 							</label>
