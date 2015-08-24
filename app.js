@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var swig = require('swig');
 var bcrypt = require('bcrypt');
 SALT_WORK_FACTOR = 10;
-var s3 = require('s3');
+// var s3 = require('s3');
 
 // var routes = require('./routes/index');
 var users = require('./routes/users');
