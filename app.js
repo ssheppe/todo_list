@@ -188,7 +188,7 @@ app.get('/logout', function(req, res){
 });
 
 
-<<<<<<< HEAD
+// <<<<<<< HEAD
 app.get('/layout', function(req, res, next) {
   res.render('layout', { title: 'My fancy task list' });
 });
@@ -205,8 +205,8 @@ app.post('/login', function(req, res){
   res.send("success");
 })
 
-=======
->>>>>>> 4e04bccb1470bb194b62ff5e7542804fbdf94809
+// =======
+// >>>>>>> 4e04bccb1470bb194b62ff5e7542804fbdf94809
 app.get('/tasks', function(req, res, next) {
   Task.find({deleted: false, user_id: req.session.user && req.session.user._id}, function (err, taskList){
     if (err) return console.error(err);
