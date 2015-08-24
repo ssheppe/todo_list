@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var swig = require('swig');
 var bcrypt = require('bcrypt');
 SALT_WORK_FACTOR = 10;
-
+var s3 = require('s3');
 
 // var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -202,8 +202,8 @@ app.get('/layout', function(req, res, next) {
   res.render('layout', { title: 'My fancy task list' });
 });
 
-app.get('/chart', function(req, res, next) {
-  res.render('chart', { title: 'My fancy task list' });
+app.get('/picture', function(req, res, next) {
+  res.render('picture', { title: 'My fancy task list' });
 });
 
 
@@ -285,55 +285,15 @@ app.get('/500', function(req, res, next) {
   res.render('500', { title: 'My fancy task list'});
 });
 
-app.get('/image', function(req, res, next) {
+app.get('/photos', function(req, res, next) {
   // console.log('\n\n\n\n HEREREE \n\n\n')
-  res.render('image', { title: 'My fancy task list'});
+  res.render('photos', { title: 'My fancy task list'});
 });
 
-// app.post('/',
-//   passport.authenticate('local', {
-//     successRedirect: '/todolist',
-//     failureRedirect: '/loginFailure'
-//   })
-// );
 
-// app.get('/loginFailure', function(req, res, next) {
-//   res.send('Failed to authenticate');
-// });
 
-// app.get('/todolist', function(req, res, next) {
-//   res.send('Successfully authenticated');
-// });
 
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.use(new LocalStrategy(function(username, password, done) {
-  process.nextTick(function() {
-    taskSchema.findOne({
-      'username': username, 
-    }, function(err, user) {
-      if (err) {
-        return done(err);
-      }
-
-      if (!user) {
-        return done(null, false);
-      }
-
-      if (user.password != password) {
-        return done(null, false);
-      }
-
-      return done(null, user);
-    });
-  });
-}));
 
 // error handlers
 
