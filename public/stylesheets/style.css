@@ -22,7 +22,7 @@
 #splashscreen{
   background-color: #e1e1e1;
  /* background-image: url("/images/bsfade.jpg"); */
-  display: block!important;
+  /*display: block!important;*/
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

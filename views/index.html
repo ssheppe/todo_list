@@ -8,6 +8,9 @@
 {% endblock %}
 
 {% block content %}
+	<div id="splashscreen">
+		<a href="#" class="enter_link">enter</a>
+	</div>
 
 	<div id="content" class="page-header">
       	<h1>welcome {{ user && user.name || ''}}</h1>
@@ -28,4 +31,17 @@
     </div>	
 
 
+{% endblock %}
+
+
+{% block scripts %}
+	{% parent %}
+	<script type="text/javascript">
+
+        $(document).ready(function($) {
+            $(".enter_link").click(function(event) {
+                $('#splashscreen').fadeOut('slow');
+            });
+        });
+    </script>
 {% endblock %}
