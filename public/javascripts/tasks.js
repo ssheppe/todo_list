@@ -1,14 +1,31 @@
-function updateGraph(chartDivId, data, width, height){
+function updateGraph(chartDivId, options, width, height){
+	var totalTasks = options.totalTasks;
+	var percentComplete = 1.0 * options.percentComplete;
+	var graphData = [];
+	if(totalTasks!=0 && 100-percentComplete == 0 ) {
+		graphData = [
+			{"label": percentComplete.toFixed(2) + "% complete", "value": percentComplete, "color":"#66BBBB"}
+		];
+	} else if ( totalTasks!=0 && percentComplete == 0 ){
+		graphData = [
+			{"label": (100.00 - percentComplete).toFixed(2) + "% incomplete", "value": 100.00 - percentComplete, "color":"#ee7766"}
+		];
+	} else {
+		graphData = [
+			{"label": percentComplete + "% complete", "value": percentComplete, "color":"#66BBBB"},
+			{"label": (100.00 - percentComplete).toFixed(2) + "% incomplete", "value": 100.00 - percentComplete, "color":"#ee7766"}
+		];
+	}
 	var w = width || 400;
 	var h = height || 400;
 	var r = h/2;
 
-	data = data || [];
+	var data = graphData || [];
 	//[{"label":"complete", "value": 40, "color":"#66BBBB"}, 
 	//	          {"label":"incomplete", "value": 60, "color":"#ee7766"}];
 	$('#' + chartDivId).html('');
 
-	var vis = d3.select('#' + chartDivId).append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+	var vis = d3.select('#' + chartDivId).append("svg:svg").data([graphData]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
 	var pie = d3.layout.pie().value(function(d){return d.value;});
 
 	// declare an arc generator function
@@ -41,7 +58,6 @@ function markTaskCompleted(id){
 		url: "/tasks/" + id,
 		type: "PUT"
 	}).done(function(result){
-		console.log("success")
 	}).fail(function(err){
 		console.error(err);
 	});
@@ -52,53 +68,40 @@ function deleteTask(id){
 		url: "/tasks/" + id,
 		type: "DELETE"
 	}).done(function(result){
-		console.log("success")
 	}).fail(function(err){
 		console.error(err);
 	});
 }
 
-// function showEdit(id){
-// 	$("#edit-"+id).closest("div").slideDown(250).removeClass('hide');
-// }
+function showEdit(id){
+	$("#edit-"+id).closest("div").slideDown(250).removeClass('hide');
+}
 
-// function updateElementDescription(id, description){
-// 	$("#edit-"+id).closest("div").slideUp(250).addClass('hide');
-// 	$("label[for='" + id + "']").text(description);
-// }
+function updateElementDescription(id, description){
+	$("#edit-"+id).closest("div").slideUp(250).addClass('hide');
+	$("label[for='" + id + "']").text(description);
+}
 
-// function submitTaskDescriptionUpdate(id, description, callback){
-// 	$.ajax({
-// 		url: "/tasks/" + id + "/edit",
-// 		type: "POST",
-// 		dataType: 'json',
-// 		data:  { description: description }
-// 	}).done(function(result){
-// 			console.log("AJAX done")
-// 	    	callback();
-// 	}).fail(function(err){
-// 		callback(new Error("Failed to update task description"));
-// 	});
-// }
+function submitTaskDescriptionUpdate(id, description, callback){
+	$.ajax({
+		url: "/tasks/" + id + "/edit",
+		type: "POST",
+		dataType: 'json',
+		data:  { description: description }
+	}).done(function(result){
+	    	callback();
+	}).fail(function(err){
+		callback(new Error("Failed to update task description"));
+	});
+}
 
 
 $( document ).ready(function() {
-var	completed = $('#my-list-done .list-group-item').length;
-var incomplete = $('#my-list .list-group-item').length;
+var completed = $('#my-list-done .js-grouping').length;
+var incomplete = $('#my-list .js-grouping').length;
 var totalTasks = completed + incomplete; 
-console.log("completed: " + completed);
-console.log("incomplete: " + incomplete);
-if(totalTasks==completed && totalTasks!=0){
-	updateGraph('chart', 
-		[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
-}else if(totalTasks!=0){
-	updateGraph('chart', 
-	[
-		{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
-		{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
-		]
-	);
-}
+var percentComplete = (100 * (completed * 1.0 / totalTasks)).toFixed(2);
+updateGraph('chart', {totalTasks: totalTasks, percentComplete: percentComplete});
 $(":checkbox").each(function(){
 	if($(this).is(':checked')){
 		$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
@@ -106,76 +109,56 @@ $(":checkbox").each(function(){
 });
 
 $(":checkbox").on("change", function(e){
-	e.preventDefault();
+	// e.preventDefault();
 	var itemId = $(this).attr('id');
+	var element;
 	markTaskCompleted(itemId);
-	console.log("Updating chart")
 	if($(this).is(":checked")){
-		$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "line-through");
-			$(this).closest('div').slideUp(250,function(){
-				$(this).show().closest('div').hide().appendTo('#my-list-done').slideDown(250).animate({opacity: 1.0});
-			completed = $('#my-list-done .list-group-item').length;
-			incomplete = $('#my-list .list-group-item').length;
-			totalTasks = completed + incomplete;
+		$('#edit-submit-'+itemId).closest('div.js-taskUpdate').addClass('hide');
+		element = $("label[for='"+itemId+"']").css("textDecoration", "line-through").closest('div .js-grouping').clone(true, true);
+		$("label[for='"+itemId+"']").closest('div .js-grouping').remove();
+		$("#my-list-done").append($(element));
+		
+		$('#edit-pencil-'+itemId).addClass('hide');
+		
+		
+		completed = $('#my-list-done .js-grouping').length;
+		incomplete = $('#my-list .js-grouping').length;
+		totalTasks = completed + incomplete;
+		percentComplete = (100 * (completed * 1.0 / totalTasks)).toFixed(2);
+		updateGraph('chart', {totalTasks: totalTasks, percentComplete: percentComplete});
+	} else {
+		$('#edit-pencil-'+itemId).removeClass('hide');
+		element = $("label[for='"+itemId+"']").css("textDecoration", "none").closest('div .js-grouping').clone(true, true);
+		$("label[for='"+itemId+"']").closest('div .js-grouping').remove();
+		$("#my-list").append($(element));
 
-			console.log("Updating chart if c %s ic %s t %s", completed, incomplete, totalTasks)
-			if(totalTasks==completed && totalTasks!=0){
-				updateGraph('chart', 
-					[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
-			}else if(totalTasks!=0){
-				updateGraph('chart', 
-				[
-					{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
-					{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
-					]
-				);
-			}
-			})
-
-	}
-	else{
-		$("label[for='"+$(this).attr("id")+"']").css("textDecoration", "none");
-		$(this).closest('div').slideUp(250,function(){
-
-				$(this).show().closest('div').hide().appendTo('#my-list').slideDown(250).animate({opacity: 1.0});
-			completed = $('#my-list-done .list-group-item').length;
-			incomplete = $('#my-list .list-group-item').length;
-			totalTasks = completed + incomplete;
-			console.log("Updating chart else c %s ic %s", completed, incomplete)
-			if(totalTasks==completed && totalTasks!=0){
-				updateGraph('chart', 
-					[{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"}]);
-			}else if(totalTasks!=0){
-				updateGraph('chart', 
-				[
-					{"label":"complete", "value": 100 * (completed * 1.0 / totalTasks), "color":"#66BBBB"},
-					{"label":"incomplete", "value": 100 * (incomplete * 1.0 / totalTasks), "color":"#ee7766"}
-					]
-				);
-			}
-			})		
+		completed = $('#my-list-done .js-grouping').length;
+		incomplete = $('#my-list .js-grouping').length;
+		totalTasks = completed + incomplete;
+		percentComplete = (100 * (completed * 1.0 / totalTasks)).toFixed(2);
+		updateGraph('chart', {totalTasks: totalTasks, percentComplete: percentComplete});
 	}
 });
 
 
 
 $(".glyphicon-trash").on("click", function(){
-	console.log("here in trash");
 	$(this).parent().slideUp();
 })
 
-// $('form.js-taskUpdate').submit(function(e){
-// 	e.preventDefault();
-// 	var id = $(this).data("task-id");
-// 	var description = $(this).children("input#edit-" + id).val();
-// 	submitTaskDescriptionUpdate(id, description, function(err){
-// 		if(err){
-// 			alert(err.message);
-// 		} else {
-// 			updateElementDescription(id, description);	
-// 		}
-// 	});
-// })
+$('form.js-taskUpdate-form').submit(function(e){
+	e.preventDefault();
+	var id = $(this).data("task-id");
+	var description = $(this).children("input#edit-" + id).val();
+	submitTaskDescriptionUpdate(id, description, function(err){
+		if(err){
+			alert(err.message);
+		} else {
+			updateElementDescription(id, description);	
+		}
+	});
+})
 
 
 
