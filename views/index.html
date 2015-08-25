@@ -3,21 +3,24 @@
 {% block title %}Welcome to Sam's Page{% endblock %}
 {% block head %}
   {% parent %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
 {% endblock %}
 
 {% block content %}
-	<div class="page-header">
+
+	<div id="content" class="page-header">
       	<h1>welcome {{ user && user.name || ''}}</h1>
 		<div>
 			<h4>
 				{% if user %}
 					<a href="/tasks">check your tasks</a>
 					<a href="/logout">logout</a>
+					
       			{% else %}
 					<a href="/register">register</a>
 					<a href="/login">login</a> 
+						
 				{% endif %}
 			</h4>
 		</div>
