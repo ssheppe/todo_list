@@ -250,7 +250,7 @@ app.put('/tasks/:id', function(req, res, next) {
          res.redirect('500');
          // res.send(500, "Failed to update id: " + id);
         } else {
-          res.send("successfully marked task as completed: " + id);
+          res.status(200).json({message: "successfully marked task as completed: " + id});
         }
       })
     } else {
@@ -259,6 +259,36 @@ app.put('/tasks/:id', function(req, res, next) {
     }
   })
 })
+
+app.post('/tasks/:id/edit', function(req, res, next) {
+  var id = req.params.id;
+  var description = req.body.description;
+  Task.findById(id, function(err, task){
+    if(err){
+     res.redirect('500');
+     // res.send(500, "Failed to update id: " + id);
+    } else if(task){
+      task.description = description;
+      task.save(function(err){
+        if(err){
+         res.redirect('500');
+         // res.send(500, "Failed to update id: " + id);
+        } else {
+          if(req.xhr){
+            res.status(200).json({message: "successfully updated task description: " + id});
+          } else {
+            res.redirect("/tasks"); 
+          }
+        }
+      })
+    } else {
+     res.redirect('404');
+     // res.send(404, "Unable to locate task with id: " + id);
+    }
+  })
+})
+
+
 
 app.post('/tasks', function(req, res, next){
   var task = new Task({description: req.body.task, user_id: req.session.user && req.session.user._id});
@@ -277,9 +307,9 @@ app.get('/500', function(req, res, next) {
   res.render('500', { title: 'My fancy task list'});
 });
 
-app.get('/photos', function(req, res, next) {
+app.get('/splash', function(req, res, next) {
   // console.log('\n\n\n\n HEREREE \n\n\n')
-  res.render('photos', { title: 'My fancy task list'});
+  res.render('splash', { title: 'My fancy task list'});
 });
 
 
