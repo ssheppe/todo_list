@@ -19,6 +19,27 @@
     quattrocento sans
 */
 
+#splashscreen{
+  background-color: #e1e1e1;
+ /* background-image: url("/images/bsfade.jpg"); */
+  display: block!important;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 99999;
+  color: red;
+  width: 100%;
+  height: 100%;
+}
+
+.enter_link{
+  margin-top: 40px;
+  font-size: x-large;
+  text-align: center;
+}
+
 body {
  /* padding: 50px;*/
   /*font: 15px "Lucida Grande", Helvetica, Arial, sans-serif; */
@@ -45,8 +66,8 @@ body {
 
 .logout{
 	position: absolute;
-    top: 80%;
-    left: 48%;
+  top: 2.7%;
+  left: 92%;
 
 }
 
@@ -60,14 +81,18 @@ body {
 	cursor: pointer;
 }
 
+.glyphicon-pencil:hover {
+  cursor: pointer;
+}
+
 .headerReplacement{
 	/*color: #8F6BB2;*/
 	color: #F0F0EE;
-    width: 100%;
-    background-color: #334455;
-    margin-top: -1px;
-    padding: 10px 10px 10px 10px;
-    text-align: left;
+  width: 100%;
+  background-color: #334455;
+  margin-top: -1px;
+  padding: 10px 10px 10px 10px;
+  text-align: left;
 }
 
 footer {
@@ -125,14 +150,13 @@ a {
 a:hover{
 	color: #778899;
 }
-/*
+
 #chart{ 
     position: fixed;
-    visibility: show;
     top: 20%;
     left: 75%;
     margin-left: -200px;
-} */
+} 
 
 
 
